@@ -73,8 +73,7 @@ def calc_folder_sizes(node)
     return size
 end
 
-def main
-    parser
+def create_tree
     root = nil
     current = nil
     $input.each { |line| 
@@ -98,11 +97,17 @@ def main
             current.add_next(node)
         end
     }
+    return root
+end
+
+def main
+    parser
+    root = create_tree
     calc_folder_sizes(root)
     show_tree(root, 0)
     solve_puzzle_01(root)
 
-    # part 01
+    # # part 01
     # answer_list = $big_dirs.select { |dir| dir[1] < 100000 }
     # p answer_list
     # answer = answer_list.map { |dir| dir[1] }.sum
