@@ -55,12 +55,11 @@ def main
 
     # check every tree
     $forest.each_with_index { |row, i|
-        if (i == 0) || (i == $row_count-1) then
-            $count += 1
-        end
         row.each_with_index { |tree, j|
-            if (j == 0) || (j == $row_length-1)
+            # if a tree is on one of the outer edges, add 1 to visible count and continue to next tree
+            if (j == 0) || (j == $row_length-1) || (i == 0) || (i == $row_count-1)
                 $count += 1
+                next
             end
             visible = check_visibility(tree, i, j)
             if visible then $count +=1 end
