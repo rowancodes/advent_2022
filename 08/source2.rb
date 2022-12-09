@@ -48,8 +48,6 @@ def check_visibility(max_height, i, j)
 end
 
 def count_trees_seen(max_height, i, j)
-    r1,r2,c1,c2 = true,true,true,true
-    visible = true
     row1 = $forest[i.to_i][0...j.to_i]
     row2 = $forest[i.to_i][j.to_i+1..$row_length]
 
