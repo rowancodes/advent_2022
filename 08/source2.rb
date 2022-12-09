@@ -1,4 +1,6 @@
 $count = 0
+$best_view_count = 0
+$best_view_cords = []
 
 def parser
     $input = File.read("input.txt")
@@ -22,11 +24,9 @@ def check_visibility(max_height, i, j)
 
     col1 = []
     col2 = []
-    # col1 = $forest[0...i.to_i][j.to_i]
     (0...i.to_i).each do |x|
         col1.push($forest[x][j.to_i])
     end
-    # col2 = $forest[i.to_i+1...$row_count][j.to_i]
     (i.to_i+1...$row_count).each do |x|
         col2.push($forest[x][j.to_i])
     end
@@ -47,6 +47,41 @@ def check_visibility(max_height, i, j)
     return visible
 end
 
+def count_trees_seen(max_height, i, j)
+    r1,r2,c1,c2 = true,true,true,true
+    visible = true
+    row1 = $forest[i.to_i][0...j.to_i]
+    row2 = $forest[i.to_i][j.to_i+1..$row_length]
+
+    col1 = []
+    col2 = []
+    (0...i.to_i).each do |x|
+        col1.push($forest[x][j.to_i])
+    end
+    (i.to_i+1...$row_count).each do |x|
+        col2.push($forest[x][j.to_i])
+    end
+
+    row1 = row1.reverse
+    col1 = col1.reverse
+
+    i1 = row1.find_index { |tree| tree >= max_height } 
+    i2 = row2.find_index { |tree| tree >= max_height } 
+    i3 = col1.find_index { |tree| tree >= max_height } 
+    i4 = col2.find_index { |tree| tree >= max_height } 
+    (i1 == nil) ? (i1 = row1.length) : (i1 += 1)
+    (i2 == nil) ? (i2 = row2.length) : (i2 += 1)
+    (i3 == nil) ? (i3 = col1.length) : (i3 += 1)
+    (i4 == nil) ? (i4 = col2.length) : (i4 += 1)
+    p "#{max_height} || #{i}/#{j} // #{i1} #{i2} #{i3} #{i4}"
+    
+    total_seen = i1 * i2 * i3 * i4
+    if total_seen >= $best_view_count then
+        $best_view_count = total_seen
+        $best_view_cords = [i,j]
+    end
+end
+
 def main
     parser
     $forest = create_forest
@@ -61,12 +96,14 @@ def main
                 $count += 1
                 next
             end
-            visible = check_visibility(tree, i, j)
-            if visible then $count +=1 end
-            p "#{$forest[i][j]} || #{$count} // #{i}/#{j} // #{visible}"
+            count_trees_seen(tree, i, j)
+            # if visible then $count +=1 end
+            # p "#{$forest[i][j]} || #{$count} // #{i}/#{j} // #{visible}"
         }
     }
-    p $count
+    count_trees_seen($forest[$best_view_cords[0]][$best_view_cords[1]], $best_view_cords[0], $best_view_cords[1])
+    p $best_view_cords
+    p $best_view_count
 end
 
 main
