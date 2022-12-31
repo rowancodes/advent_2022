@@ -5,7 +5,7 @@ def mult(old, operation_num)
 end
 
 def plus(old, operation_num)
-    return (old * operation_num)
+    return (old + operation_num)
 end
 
 class Monkey
@@ -57,36 +57,27 @@ def main
             # monkey inspects item in order
             # operation happens (worry level changes)
             # worry level divided 3 and floored
-
     init
-    # p $monkeys
 
-    20.times do
-        # $monkeys.each {|x| p "items: #{x.items}"}
-        # p $monkeys.map(&:inspect_count)
-        $monkeys.each { |monkey|
-        until monkey.items.empty?
-            p "monkey items: #{monkey.items}"
-            worry_level = monkey.items.first
-            # p "inspect level: #{monkey.inspect_count}"
-            monkey.raise_inspect_count
-            p "1 (before): #{worry_level}"
-            item = monkey.operation.(worry_level)
-            p "2 (after): #{item}"
-            item = (item/3).floor
-            p "3: #{item}"
-            monkey.choose_target_and_throw(item)
-        end
-    }
+    20.times do |round_count|
+        $monkeys.each {|x| p "items: #{x.items}"}
+        p "round #{round_count+1} : #{$monkeys.map(&:inspect_count)}"
+        $monkeys.each_with_index { |monkey, i|
+            until monkey.items.empty?
+                # p "monkey ##{i} items: #{monkey.items}"
+                item = monkey.items.first
+                monkey.raise_inspect_count
+                item = monkey.operation.(item)
+                item = (item/3).floor
+                monkey.choose_target_and_throw(item)
+            end
+        }
     end
 
-    # p $monkeys
     p $monkeys.map(&:inspect_count)
     top_two = $monkeys.map(&:inspect_count).sort.last(2)
     p top_two
     p top_two.first * top_two.last
-
-    p $monkeys.first.operation.(12)
 end
 
 main
